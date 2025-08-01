@@ -23,35 +23,26 @@ class LLMService:
         return prompt_path.read_text(encoding="utf-8")
 
     def transform_document(
-        self, input_content: str, prompt_name: str = "ftl_document"
+        self, input_content: str, prompt_name: str = "ftl_document", tools_available: str = "tools"
     ) -> str:
         """Transform input content using the specified prompt."""
         try:
             # Load the prompt template
-            prompt_template = self.load_prompt(prompt_name)
-
-            # Create the full prompt with input content
-            full_prompt = (
-                f"{prompt_template}\n\nInput document to transform:\n\n{input_content}"
-            )
+            system_prompt = self.load_prompt(prompt_name)
+            tools = self.load_prompt(tools_available)
 
             # Call the LLM
             response = litellm.completion(
                 model=self.model,
-                messages=[{"role": "user", "content": full_prompt}],
-                temperature=0.1,  # Low temperature for consistent output
-                max_tokens=4000,  # Sufficient for most documents
+                messages=[
+                    {"role": "system", "content": f"{system_prompt}\n\n{tools}"},
+                    {"role": "user", "content": f"Transform this document into a complete ftl-document format. You MUST include detailed Implementation Steps and Verification Steps sections - these cannot be empty. Provide specific, actionable instructions.\n\nDocument to transform:\n\n{input_content}"},
+                ],
+                temperature=0,  # Low temperature for consistent output
+                max_tokens=4096*4,
             )
 
             return response.choices[0].message.content.strip()
 
         except Exception as e:
             raise RuntimeError(f"LLM transformation failed: {str(e)}")
-
-    def set_api_key(self, api_key: str) -> None:
-        """Set the OpenAI API key for litellm."""
-        os.environ["OPENAI_API_KEY"] = api_key
-
-    def check_api_key(self) -> bool:
-        """Check if API key is available."""
-        return bool(os.environ.get("OPENAI_API_KEY"))

@@ -10,6 +10,9 @@ from .core import DocumentParser, FTLDocument
 from .generator import DocumentGenerator
 from .validator import DocumentValidator, ValidationError
 
+import litellm
+litellm._turn_on_debug()
+
 
 @click.group()
 @click.version_option(version="0.1.0")

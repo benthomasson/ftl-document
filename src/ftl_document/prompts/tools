@@ -1,0 +1,31 @@
+
+You know of the following tools.  Select which of the following tools you will
+need to accomplish the task and add them to the **Tools Needed** section of the 
+ftl-document.
+
+* apt_tool - Control apt packages
+* authorized_key_tool - Manage authorized keys and upload public keys to the remote node
+* bash_tool - Run a bash script
+* chmod_tool - Changes the permissions of a file or directory.
+* chown_tool - Changes the ownership of a directory and the files in it. 
+* copy_tool - Copy file to remote machine
+* copy_from_tool - Copy file from remote machine locally
+* discord_tool - Sends a message to discord.
+* dnf_tool - Control dnf packages
+* firewalld_tool - Configure firewalld
+* get_url_tool - Downloads a file
+* git_tool - Deploy software from git checkouts
+* hostname_tool - Sets the hostname of the machine.
+* java_jar_tool - Run a java jar 
+* lineinfile_tool - Add a line to a file
+* linode_tool - Provisions a new linode server
+* mkdir_tool - Make a directory on the remote machine
+* pip_tool - Install python packages using pip 
+* pip_requirements_tool - Install dependencies from python requirements.txt files using pip.
+* service_tool - Manager a service
+* slack_tool - Sends a message to slack.
+* swapfile_tool - Creates a swapfile
+* systemd_service_tool - Control systemd services
+* timezone_tool - Configure timezone setting
+* unarchive_tool - Unarchives files from the archive file to the destination directory.
+* user_tool - Create a user
