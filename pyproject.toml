@@ -33,6 +33,7 @@ dependencies = [
     "markdown>=3.4.0",
     "pyyaml>=6.0",
     "litellm>=1.0.0",
+    "requests>=2.25.0",
 ]
 
 [project.optional-dependencies]
@@ -43,6 +44,7 @@ dev = [
     "flake8>=5.0.0",
     "mypy>=1.0.0",
     "pre-commit>=2.20.0",
+    "types-requests>=2.25.0",
 ]
 docs = [
     "sphinx>=5.0.0",

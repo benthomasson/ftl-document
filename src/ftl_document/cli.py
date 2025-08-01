@@ -1,9 +1,10 @@
 """Command line interface for ftl-document."""
 
-import os
 import click
+import requests
 from pathlib import Path
 from typing import Optional
+from urllib.parse import urlparse
 
 from .core import DocumentParser, FTLDocument
 from .generator import DocumentGenerator
@@ -12,13 +13,13 @@ from .validator import DocumentValidator, ValidationError
 
 @click.group()
 @click.version_option(version="0.1.0")
-def main():
+def main() -> None:
     """FTL Document Generator - Convert documentation to FTL format."""
     pass
 
 
 @main.command()
-@click.argument("input_file", type=click.Path(exists=True, path_type=Path))
+@click.argument("input_source", type=str)
 @click.option(
     "--output", "-o", type=click.Path(path_type=Path), help="Output file path"
 )
@@ -30,18 +31,44 @@ def main():
     help="Output format",
 )
 @click.option(
-    "--validate/--no-validate", default=True, help="Validate generated document"
+    "--validate/--no-validate",
+    default=True,
+    help="Validate generated document",
 )
 @click.option(
-    "--model", "-m", default="claude-sonnet-4-20250514", help="LLM model to use for transformation"
+    "--model",
+    "-m",
+    default="claude-sonnet-4-20250514",
+    help="LLM model to use for transformation",
 )
 def generate(
-    input_file: Path, output: Optional[Path], format: str, validate: bool, model: str
-):
-    """Generate FTL document from input file."""
+    input_source: str,
+    output: Optional[Path],
+    format: str,
+    validate: bool,
+    model: str,
+) -> None:
+    """Generate FTL document from input file or URL."""
     try:
-        # Read input file
-        content = input_file.read_text(encoding="utf-8")
+        # Determine if input is URL or file path
+        parsed_url = urlparse(input_source)
+        if parsed_url.scheme in ("http", "https"):
+            # Fetch content from URL
+            click.echo(f"Fetching content from URL: {input_source}")
+            try:
+                response = requests.get(input_source, timeout=30)
+                response.raise_for_status()
+                content = response.text
+            except requests.exceptions.RequestException as e:
+                click.echo(f"Error fetching URL: {e}", err=True)
+                raise click.Abort()
+        else:
+            # Read from file path
+            input_file = Path(input_source)
+            if not input_file.exists():
+                click.echo(f"Error: File not found: {input_source}", err=True)
+                raise click.Abort()
+            content = input_file.read_text(encoding="utf-8")
 
         # Parse content using LLM
         parser = DocumentParser(model=model)
