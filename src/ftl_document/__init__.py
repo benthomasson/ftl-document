@@ -13,7 +13,7 @@ from .validator import DocumentValidator
 
 __all__ = [
     "FTLDocument",
-    "DocumentParser", 
+    "DocumentParser",
     "DocumentGenerator",
     "DocumentValidator",
 ]
