@@ -42,7 +42,7 @@ class FTLDocument(BaseModel):
 class DocumentParser:
     """Parser for converting various document formats to FTL Documents using LLM."""
 
-    def __init__(self, model: str = "gpt-3.5-turbo"):
+    def __init__(self, model: str = "claude-sonnet-4-20250514"):
         self.supported_formats = ["markdown", "docx", "txt", "html"]
         self.llm_service = LLMService(model=model)
 

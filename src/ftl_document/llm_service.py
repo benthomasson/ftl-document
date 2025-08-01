@@ -9,7 +9,7 @@ import litellm
 class LLMService:
     """Service for calling LLMs to transform documents."""
 
-    def __init__(self, model: str = "gpt-3.5-turbo"):
+    def __init__(self, model: str = "claude-sonnet-4-20250514"):
         """Initialize LLM service with specified model."""
         self.model = model
         self.prompt_dir = Path(__file__).parent / "prompts"

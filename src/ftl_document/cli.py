@@ -33,7 +33,7 @@ def main():
     "--validate/--no-validate", default=True, help="Validate generated document"
 )
 @click.option(
-    "--model", "-m", default="gpt-3.5-turbo", help="LLM model to use for transformation"
+    "--model", "-m", default="claude-sonnet-4-20250514", help="LLM model to use for transformation"
 )
 def generate(
     input_file: Path, output: Optional[Path], format: str, validate: bool, model: str
@@ -42,17 +42,6 @@ def generate(
     try:
         # Read input file
         content = input_file.read_text(encoding="utf-8")
-
-        # Check for API key
-        if not os.environ.get("OPENAI_API_KEY"):
-            click.echo(
-                "Error: OPENAI_API_KEY environment variable is required", err=True
-            )
-            click.echo(
-                "Please set your OpenAI API key: export OPENAI_API_KEY=your_key_here",
-                err=True,
-            )
-            raise click.Abort()
 
         # Parse content using LLM
         parser = DocumentParser(model=model)
