@@ -46,9 +46,9 @@ class DocumentGenerator:
         dependencies = self._format_list_section(document.dependencies)
         tools_required = self._format_list_section(document.tools_required, prefix="- ")
         questions = self._format_list_section(document.questions, prefix="- ")
-        implementation_steps = self._format_numbered_list(document.implementation_steps)
-        verification_steps = self._format_numbered_list(document.verification_steps)
-        produces = document.produces or ""
+        implementation_steps = "\n".join(document.implementation_steps)
+        verification_steps = "\n".join(document.verification_steps)
+        produces = self._format_list_section(document.produces, prefix="- ")
 
         return template.format(
             title=document.title,

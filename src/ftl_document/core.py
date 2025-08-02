@@ -19,13 +19,13 @@ class FTLDocument(BaseModel):
         default_factory=list, description="User input questions"
     )
     implementation_steps: List[str] = Field(
-        ..., description="Ordered implementation steps"
+        default_factory=list, description="Ordered implementation steps"
     )
     verification_steps: List[str] = Field(
         default_factory=list, description="Verification procedures"
     )
-    produces: Optional[str] = Field(
-        None, description="What the document creates/achieves"
+    produces: List[str] = Field(
+        default_factory=list, description="What the document creates/achieves"
     )
     metadata: Dict[str, Any] = Field(
         default_factory=dict, description="Additional metadata"
@@ -69,16 +69,12 @@ class DocumentParser:
         questions = []
         implementation_steps = []
         verification_steps = []
-        produces = ""
+        produces = []
 
         current_section = None
 
         for line in lines:
             line = line.strip()
-
-            # Skip empty lines
-            if not line:
-                continue
 
             # Check for title (markdown h1)
             if line.startswith("# "):
@@ -90,47 +86,46 @@ class DocumentParser:
                 section_name = line[2:-2].lower()
                 if "requirement" in section_name or "dependencies" in section_name:
                     current_section = "dependencies"
+                    continue
                 elif "tool" in section_name:
                     current_section = "tools_required"
+                    continue
                 elif "question" in section_name:
                     current_section = "questions"
+                    continue
                 elif "implementation" in section_name:
                     current_section = "implementation_steps"
+                    continue
                 elif "verification" in section_name:
                     current_section = "verification_steps"
+                    continue
                 elif "produce" in section_name:
                     current_section = "produces"
-                continue
+                    continue
 
-            # Parse list items
-            if line.startswith("- ") and current_section:
-                item = line[2:].strip()
+            def strip_list_item_prefix(item):
+                if item.startswith("- "):
+                    item = item[2:]
+                return item
+
+
+            if current_section:
                 if current_section == "dependencies":
-                    dependencies.append(item)
+                    line = strip_list_item_prefix(line)
+                    dependencies.append(line)
                 elif current_section == "tools_required":
-                    tools_required.append(item)
+                    line = strip_list_item_prefix(line)
+                    tools_required.append(line)
                 elif current_section == "questions":
-                    questions.append(item)
+                    line = strip_list_item_prefix(line)
+                    questions.append(line)
                 elif current_section == "produces":
-                    produces = item
-
-            # Parse numbered items for steps
-            elif line and current_section in [
-                "implementation_steps",
-                "verification_steps",
-            ]:
-                # Remove number prefix if present
-                if line[0].isdigit() and ". " in line:
-                    item = line.split(". ", 1)[1]
-                elif line.startswith("- "):
-                    item = line[2:].strip()
-                else:
-                    item = line
-
-                if current_section == "implementation_steps":
-                    implementation_steps.append(item)
+                    line = strip_list_item_prefix(line)
+                    produces.append(line)
+                elif current_section == "implementation_steps":
+                    implementation_steps.append(line)
                 elif current_section == "verification_steps":
-                    verification_steps.append(item)
+                    verification_steps.append(line)
 
         return FTLDocument(
             title=title or "Untitled Document",

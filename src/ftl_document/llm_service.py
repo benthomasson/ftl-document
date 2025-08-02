@@ -42,7 +42,9 @@ class LLMService:
                 max_tokens=4096*4,
             )
 
-            return response.choices[0].message.content.strip()
+            result = response.choices[0].message.content.strip()
+            print(result)
+            return result
 
         except Exception as e:
             raise RuntimeError(f"LLM transformation failed: {str(e)}")
