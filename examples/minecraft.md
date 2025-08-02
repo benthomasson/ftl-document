@@ -6,7 +6,6 @@
 - Stable internet connection (wired connection preferred over Wi-Fi)
 - Administrative access to your computer and router
 - Basic knowledge of command-line operations and networking concepts
-- 
 
 ## Tools Needed
 - bash_tool
@@ -17,7 +16,6 @@
 - service_tool
 - firewalld_tool
 - lineinfile_tool
-- 
 
 ## User Questions
 - What version of Minecraft server do you want to run? (Latest recommended: 1.21)
@@ -26,7 +24,6 @@
 - Do you want to enable whitelist for security? (Recommended: Yes)
 - Will this be a local LAN server or do you need internet access via port forwarding?
 - What operating system are you running? (Windows, macOS, Linux)
-- 
 
 ## Implementation Steps
 
@@ -80,35 +77,29 @@ pause
 cd "$(dirname "$0")"
 exec java -Xms1024M -Xmx2048M -jar server.jar --nogui
 ```
-- Make script executable (macOS/Linux): Run `chmod +x start.sh`
+- Make script executable (macOS/Linux): `chmod +x start.sh`
 
 **Phase 5: Firewall Configuration**
-- **Windows**:
-- Allow Java through Windows Firewall when prompted
-- Or manually add firewall rule for port 25565 (TCP/UDP)
-- **Linux**: Configure firewall to allow Minecraft port:
-- `sudo ufw allow 25565` (Ubuntu) or `sudo firewall-cmd --add-port=25565/tcp --permanent` (Fedora)
+- **Windows**: Allow Java through Windows Firewall when prompted, or manually add exception
+- **Linux**: Open port 25565 with `sudo ufw allow 25565` or configure firewalld
+- **macOS**: Configure firewall in System Preferences > Security & Privacy
 
 **Phase 6: Network Setup (Choose One)**
 - **For LAN only**:
 - Find your internal IP address using `ipconfig` (Windows) or `ip addr` (Linux)
 - Players connect using your internal IP:25565
 - **For Internet access**:
-- Configure port forwarding on your router:
-- Access router admin panel (usually 192.168.1.1 or 192.168.0.1)
-- Find port forwarding settings
-- Forward external port 25565 to your internal IP port 25565
-- Set protocol to TCP/UDP or Both
-- Find your external IP address (Google "what is my IP")
-- Players connect using your external IP:25565
+- Configure port forwarding on your router for port 25565
+- Forward to your computer's internal IP address
+- Players connect using your external IP address
 
 **Phase 7: Server Management Setup**
 - Configure operators:
 - Start the server
-- In server console, run `op <username>` to make players operators
+- In server console, run `op <username>` for each admin
 - Configure whitelist (if enabled):
 - In server console, run `whitelist add <username>` for each allowed player
-- Or edit whitelist.json file directly
+- Set up regular backups of the server directory
 
 
 ## Verification Steps
@@ -118,37 +109,36 @@ exec java -Xms1024M -Xmx2048M -jar server.jar --nogui
 - Confirm no error messages about Java not being found
 
 - Run the startup script (start.bat or start.sh)
-- Verify server console shows "Done" message without errors
-- Check that server.properties file exists and contains your settings
-- Confirm eula.txt shows `eula=true`
+- Verify server console appears and shows "Done" message
+- Check that no error messages appear during startup
+- Confirm server.properties file exists and contains your settings
 
-- Start Minecraft client on same machine
-- Go to Multiplayer → Direct Connect
-- Enter `localhost:25565` (or your custom port)
+- Start Minecraft client on same computer
+- Go to Multiplayer > Direct Connect
+- Enter "localhost" or "127.0.0.1"
 - Verify successful connection to server
 
 - **For LAN**: Have another device on same network connect using internal IP
 - **For Internet**: Use online port checker tool (e.g., yougetsignal.com) to verify port 25565 is open
-- Test connection from external network using your external IP address
+- Test connection from external network if possible
 
-- Confirm no "connection timed out" errors when connecting
-- Verify firewall rules allow Java/Minecraft traffic
-- Test both TCP and UDP protocols if possible
-
-- Monitor server console for lag warnings
+- Monitor server console for any error messages
 - Check server TPS (ticks per second) - should be close to 20
-- Verify RAM usage stays within allocated limits
-- Confirm CPU usage is reasonable for your hardware
+- Verify RAM usage is within allocated limits
+- Test with expected number of players to ensure stable performance
 
-- Test that whitelist blocks unauthorized players (if enabled)
-- Verify operator commands work for designated ops
-- Confirm server responds appropriately to player connections
+- Confirm whitelist is working (unauthorized players cannot join)
+- Verify operator permissions are correctly assigned
+- Check that only necessary ports are open in firewall
+- Test that server stops gracefully with "stop" command
 
 
 ## Produces
 - A fully functional Minecraft Java Edition server
-- Proper network configuration for player access (LAN or Internet)
-- Security measures including whitelist and operator controls
+- Proper Java runtime environment installation
+- Server configuration files (server.properties, whitelist.json, ops.json)
 - Startup scripts for easy server management
-- Firewall configuration allowing server traffic
-- Documentation of server settings and connection details
+- Network configuration for player access (LAN or Internet)
+- Security measures including firewall rules and whitelist
+- Backup-ready server directory structure
+- Administrative tools and operator access

@@ -64,13 +64,7 @@ class DocumentGenerator:
         """Format a list of items with given prefix."""
         if not items:
             return ""
-        return "\n".join(f"{prefix}{item}" for item in items)
-
-    def _format_numbered_list(self, items: list) -> str:
-        """Format a numbered list of items."""
-        if not items:
-            return ""
-        return "\n".join(f"{i+1}. {item}" for i, item in enumerate(items))
+        return "\n".join(f"{prefix}{item}" for item in items if item)
 
     def generate_json(self, document: FTLDocument) -> str:
         """Generate JSON representation of FTL document."""
