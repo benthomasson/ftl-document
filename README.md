@@ -8,7 +8,9 @@ FTL Documents are automation in the form of human-readable documentation. They a
 
 ## Features
 
+- **AI-Powered Transformation**: Automatically convert any documentation format to FTL using LLM models
 - **Multi-format parsing**: Convert from markdown, DOCX, HTML, and plain text
+- **URL Support**: Generate FTL documents directly from web content
 - **Validation**: Comprehensive validation with quality scoring
 - **Multiple output formats**: Generate markdown, JSON, or YAML
 - **Command-line interface**: Easy-to-use CLI for batch processing
@@ -38,6 +40,18 @@ Generate an FTL document from existing documentation:
 ftl-document generate input.md -o output.md
 ```
 
+Generate from a URL:
+
+```bash
+ftl-document generate https://example.com/docs -o output.md
+```
+
+Use a specific LLM model:
+
+```bash
+ftl-document generate input.md -o output.md --model gpt-4
+```
+
 Validate an existing FTL document:
 
 ```bash
@@ -53,9 +67,14 @@ ftl-document template > new-document.md
 ### Python API
 
 ```python
-from ftl_document import FTLDocument, DocumentGenerator, DocumentValidator
+from ftl_document import FTLDocument, DocumentGenerator, DocumentValidator, DocumentParser
 
-# Create a document
+# Transform existing documentation using AI
+parser = DocumentParser(model="claude-sonnet-4-20250514")
+content = "Install nginx and configure SSL certificates..."
+doc = parser.parse_with_llm(content)
+
+# Or create a document manually
 doc = FTLDocument(
     title="Setup Development Environment",
     dependencies=["Python 3.8+", "Git"],
